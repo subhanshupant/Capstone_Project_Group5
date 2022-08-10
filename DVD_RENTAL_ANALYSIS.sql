@@ -192,7 +192,7 @@ LIMIT 10;
 
 *******************************************************************************************************************************************
 
-************************************--Data Validation for Top 10 movies based on customer count--******************************************
+************************************--Data Validation for Top 10 movies based on customer_count--******************************************
 
 SELECT A.NAME AS Genre,
 B.FILM_ID,
@@ -213,4 +213,43 @@ GROUP BY A.NAME,B.FILM_ID,C.TITLE
 ORDER BY COUNT(DISTINCT(F.CUSTOMER_ID)) DESC
 LIMIT 10;
 
+*******************************************************************************************************************************************
+
+*************************************************--Revenue Rating Overall--****************************************************************
+SELECT 
+C.RATING,
+SUM(AMOUNT) FROM
+CATEGORY A
+JOIN FILM_CATEGORY B
+USING (CATEGORY_ID)
+JOIN FILM C
+USING (FILM_ID)
+JOIN INVENTORY D
+USING (FILM_ID)
+JOIN RENTAL E
+USING (INVENTORY_ID)
+JOIN PAYMENT F
+USING (RENTAL_ID)
+GROUP BY C.RATING;
+
+*******************************************************************************************************************************************
+
+**********************************************--REVENUE  PER RATING GENRE WISE--***********************************************************
+
+SELECT A.NAME as genre,
+C.RATING,
+SUM(AMOUNT) FROM
+CATEGORY A
+JOIN FILM_CATEGORY B
+USING (CATEGORY_ID)
+JOIN FILM C
+USING (FILM_ID)
+JOIN INVENTORY D
+USING (FILM_ID)
+JOIN RENTAL E
+USING (INVENTORY_ID)
+JOIN PAYMENT F
+USING (RENTAL_ID)
+GROUP BY A.NAME,C.RATING
+ORDER BY GENRE DESC;
 *******************************************************************************************************************************************
