@@ -42,7 +42,8 @@ SELECT K.CUSTOMER_ID,
 K.FIRST_NAME,
 K.LAST_NAME,
 K.EMAIL,
-K. ADDRESS_ID,
+K.ADDRESS_ID,
+H.AMOUNT,
 K.ACTIVE,
 K.CREATE_DATE,
 L.ADDRESS,
@@ -58,6 +59,8 @@ O.MANAGER_STAFF_ID,
 O.LAST_UPDATE
 FROM 
 CUSTOMER K
+LEFT JOIN PAYMENT H
+ON K.CUSTOMER_ID = H.CUSTOMER_ID
 LEFT JOIN ADDRESS L
 ON K.ADDRESS_ID = L.ADDRESS_ID
 LEFT JOIN CITY M
@@ -253,3 +256,68 @@ USING (RENTAL_ID)
 GROUP BY A.NAME,C.RATING
 ORDER BY GENRE DESC;
 *******************************************************************************************************************************************
+
+*************************************************--TOP 10 CUSTOMER ON AMOUNT--*************************************************************
+
+SELECT A.CUSTOMER_ID,
+A.FIRST_NAME||' '||LAST_NAME as Full_Name,
+C.CITY,
+D.COUNTRY,
+SUM(AMOUNT)
+FROM
+CUSTOMER A
+JOIN ADDRESS B
+ON A.ADDRESS_ID = B.ADDRESS_ID
+JOIN CITY C
+ON B.CITY_ID = C.CITY_ID
+JOIN COUNTRY D
+ON C.COUNTRY_ID = D.COUNTRY_ID
+JOIN PAYMENT E
+ON E.CUSTOMER_ID = A.CUSTOMER_ID
+GROUP BY A.CUSTOMER_ID, A.FIRST_NAME, A.LAST_NAME, C.CITY, D.COUNTRY
+ORDER BY SUM(AMOUNT) DESC
+LIMIT 10;
+
+*******************************************************************************************************************************************
+
+*****************************************--TOP 10 COUSTOMER ON BASIS  OF COUNT OF RENTAL_ID--**********************************************
+
+SELECT A.CUSTOMER_ID,
+A.FIRST_NAME,
+A.LAST_NAME,
+C.CITY,
+D.COUNTRY,
+COUNT(F.RENTAL_ID)
+FROM
+CUSTOMER A
+JOIN ADDRESS B
+ON A.ADDRESS_ID = B.ADDRESS_ID
+JOIN CITY C
+ON B.CITY_ID = C.CITY_ID
+JOIN COUNTRY D
+ON C.COUNTRY_ID = D.COUNTRY_ID
+JOIN PAYMENT E
+ON E.CUSTOMER_ID = A.CUSTOMER_ID
+JOIN RENTAL F
+ON E.RENTAL_ID = F.RENTAL_ID
+GROUP BY A.CUSTOMER_ID, A.FIRST_NAME, A.LAST_NAME, C.CITY, D.COUNTRY
+ORDER BY COUNT(F.RENTAL_ID) DESC
+LIMIT 10;
+*******************************************************************************************************************************************
+
+***********************************************************--COUNTRY WISE AMOUNT--****************************************************************
+
+SELECT D.COUNTRY,
+SUM(AMOUNT)
+FROM
+CUSTOMER A
+JOIN ADDRESS B
+ON A.ADDRESS_ID = B.ADDRESS_ID
+JOIN CITY C
+ON B.CITY_ID = C.CITY_ID
+JOIN COUNTRY D
+ON C.COUNTRY_ID = D.COUNTRY_ID
+JOIN PAYMENT E
+ON E.CUSTOMER_ID = A.CUSTOMER_ID
+GROUP BY D.COUNTRY
+ORDER BY SUM(AMOUNT) DESC;
