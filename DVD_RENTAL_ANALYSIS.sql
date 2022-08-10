@@ -171,9 +171,9 @@ GROUP BY RETURN_STATUS;
 
 *****************************************--Data Validation for Top 10 movies amount wise--*************************************************
 
-SELECT A.NAME,
+SELECT A.NAME AS Genre,
 B.FILM_ID,
-C.TITLE,
+C.TITLE AS Movie_Name,
 SUM(AMOUNT) FROM
 CATEGORY A
 JOIN FILM_CATEGORY B
@@ -189,13 +189,14 @@ USING (RENTAL_ID)
 GROUP BY A.NAME,B.FILM_ID,C.TITLE
 ORDER BY SUM(AMOUNT) DESC
 LIMIT 10;
+
 *******************************************************************************************************************************************
 
 ************************************--Data Validation for Top 10 movies based on customer count--******************************************
 
-SELECT A.NAME,
+SELECT A.NAME AS Genre,
 B.FILM_ID,
-C.TITLE,
+C.TITLE AS Movie_name,
 COUNT(F.CUSTOMER_ID) FROM
 FILM C
 LEFT JOIN FILM_CATEGORY B
